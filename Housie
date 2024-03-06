@@ -1,0 +1,58 @@
+def random_housie
+    # A ticket is a grid of 3 rows by 9 columns
+    rows = 3
+    columns = 9
+    numbers = [] # declare one empty array
+    # A Grid which has housie boxes in 2-dimensional form.
+    grid = Array.new(rows) { Array.new(columns) }
+
+    # To generate 5 random slots for each row.
+    row = []
+    row[0] = (1..9).to_a.sort{ rand() - 0.5 }[0..4].sort
+    row[1] = (1..9).to_a.sort{ rand() - 0.5 }[0..4].sort
+    row[2] = (1..9).to_a.sort{ rand() - 0.5 }[0..4].sort
+
+    # Here doing append and getting total 15 numbers.
+    all_rows = (row[0] + row[1] + row[2]).sort
+
+    # Iterate over numbers 1 to 9
+    1.upto(9) do |i|
+      # Count how many times the current number appears in all_rows
+      column_count = all_rows.count(i)
+      # Get a sorted list of random numbers in the range of the current number
+      numbers = unsorted_lookup_range(i)[0..column_count].sort
+      # Iterate over each row
+      0.upto(2) do |j|
+        # Check if the current row does not include the current number
+        if !row[j].include?(i)
+          # If the number is not in the row, mark the cell with "X"
+          grid[j][i - 1] = "X"
+        else
+          # If the number is in the row, use the next random number from the list
+          grid[j][i - 1] = numbers.shift
+        end
+      end
+    end
+    
+    return grid
+  end
+
+  def unsorted_lookup_range(i)
+    # Calculate the lower and upper bounds for the range based on the input number i
+    lower_range = i == 1 ? 1 : (i-1)*10
+    upper_range = (i*10) - 1
+    # Generate an array containing numbers in the range and shuffle them
+    (lower_range..upper_range).to_a.sort{ rand() - 0.5 }
+  end
+
+  def print_random_housie
+    # Generate a random Housie grid
+    grid = random_housie
+    # Iterate over each row in the grid and print it
+    grid.each do |row|
+      puts row.join("       ")
+    end
+  end
+
+# Call this one (Note: The Ruby program must have a single function that one can call and it should print out the housie ticket on a console) 
+print_random_housie
